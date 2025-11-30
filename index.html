@@ -6,34 +6,117 @@
     <title>114年高雄市不動產拍賣統計（1月-10月）</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+        }
+
         body {
-            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             padding: 20px;
             color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 粒子背景 */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.6;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            animation: fadeIn 0.8s ease-in;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            animation: slideUp 1s ease-out;
+            position: relative;
+            z-index: 1;
         }
 
-        @keyframes fadeIn {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 2px;
+            animation: expandLine 1s ease-out 0.5s both;
+        }
+
+        @keyframes expandLine {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            animation: fadeInDown 1s ease-out;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
             }
             to {
                 opacity: 1;
@@ -41,106 +124,311 @@
             }
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
         .subtitle {
-            font-size: 1.2em;
+            font-size: 1.3em;
             color: #7f8c8d;
             margin-top: 10px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .stats-overview {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 35px;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            animation: cardFloat 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes cardFloat {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-15px) scale(1.05) rotate(2deg);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.6);
         }
 
         .stat-card h3 {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            opacity: 0.9;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            opacity: 0.95;
+            font-weight: 500;
         }
 
         .stat-card .number {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin: 15px 0;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+
+        .stat-card .icon {
             font-size: 2.5em;
-            font-weight: bold;
-            margin: 10px 0;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* 控制面板 */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 25px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
         }
 
         .chart-container {
-            margin: 40px 0;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
+            margin: 50px 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 25px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 1s ease-out 0.7s both;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .chart-header h2 {
+            color: var(--dark);
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
         }
 
         .chart-wrapper {
             position: relative;
-            height: 2000px;
+            height: 2200px;
             margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
         .data-table {
-            margin-top: 40px;
+            margin-top: 50px;
             overflow-x: auto;
+            animation: fadeIn 1s ease-out 0.9s both;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .table-header h2 {
+            color: var(--dark);
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .sort-buttons {
+            display: flex;
+            gap: 10px;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             background: white;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
         }
 
         thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
         }
 
         th {
-            padding: 15px;
+            padding: 20px;
             text-align: left;
             font-weight: 600;
             font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        th::after {
+            content: ' ↕';
+            opacity: 0.5;
+            font-size: 0.8em;
+        }
+
+        th.sorted-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        th.sorted-desc::after {
+            content: ' ↓';
+            opacity: 1;
         }
 
         td {
-            padding: 12px 15px;
+            padding: 18px 20px;
             border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        tbody tr {
+            transition: all 0.3s;
         }
 
         tbody tr:hover {
-            background: #f0f4ff;
-            transition: background 0.2s ease;
+            background: linear-gradient(90deg, #f0f4ff 0%, #e8f0fe 100%);
+            transform: scale(1.01);
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
         }
 
         tbody tr:last-child td {
@@ -151,85 +439,160 @@
             text-align: right;
             font-weight: 600;
             font-family: 'Courier New', monospace;
+            font-size: 1.1em;
         }
 
         .district-cell {
-            font-weight: 500;
-            color: #2c3e50;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05em;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .rank-badge.top3 {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: var(--dark);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
         .footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
+            margin-top: 60px;
+            padding-top: 30px;
             border-top: 2px solid #e0e0e0;
             color: #7f8c8d;
-            font-size: 0.9em;
+            font-size: 1em;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 25px;
             }
 
             h1 {
-                font-size: 1.8em;
+                font-size: 2.2em;
             }
 
             .chart-wrapper {
-                height: 1500px;
+                height: 1600px;
             }
 
-            table {
-                font-size: 0.9em;
+            .controls {
+                flex-direction: column;
             }
 
-            th, td {
-                padding: 10px;
+            .search-box {
+                width: 100%;
             }
+        }
+
+        /* 滚动动画 */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
+    <div id="particles-js"></div>
+    
     <div class="container">
         <header>
-            <h1>114年高雄市不動產拍賣統計</h1>
-            <p class="subtitle">統計期間：民國114年1月至10月</p>
-            <p class="subtitle">資料來源：各行政區不動產拍賣統計</p>
+            <h1>🏛️ 114年高雄市不動產拍賣統計</h1>
+            <p class="subtitle">📅 統計期間：民國114年1月至10月</p>
+            <p class="subtitle">📊 資料來源：各行政區不動產拍賣統計</p>
         </header>
 
         <div class="stats-overview">
             <div class="stat-card">
+                <span class="icon">🏞️</span>
                 <h3>總土地筆數</h3>
                 <div class="number" id="totalLand">0</div>
             </div>
             <div class="stat-card">
+                <span class="icon">🏢</span>
                 <h3>總建物棟數</h3>
                 <div class="number" id="totalBuilding">0</div>
             </div>
             <div class="stat-card">
+                <span class="icon">📍</span>
                 <h3>行政區總數</h3>
                 <div class="number">38</div>
             </div>
         </div>
 
-        <div class="chart-container">
-            <h2 style="margin-bottom: 20px; color: #2c3e50;">各行政區拍賣統計圖表</h2>
+        <div class="chart-container fade-in-up">
+            <div class="chart-header">
+                <h2>📈 各行政區拍賣統計圖表</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="stacked">堆疊圖</button>
+                    <button class="view-btn" data-view="grouped">分組圖</button>
+                </div>
+            </div>
             <div class="chart-wrapper">
                 <canvas id="auctionChart"></canvas>
             </div>
         </div>
 
-        <div class="data-table">
-            <h2 style="margin-bottom: 20px; color: #2c3e50;">詳細數據表格</h2>
+        <div class="data-table fade-in-up">
+            <div class="table-header">
+                <h2>📋 詳細數據表格</h2>
+                <div class="sort-buttons">
+                    <button class="filter-btn" data-sort="total">按總計</button>
+                    <button class="filter-btn" data-sort="land">按土地</button>
+                    <button class="filter-btn" data-sort="building">按建物</button>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="搜尋行政區...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="top10">前10名</button>
+                    <button class="filter-btn" data-filter="top5">前5名</button>
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>
-                        <th>排名</th>
-                        <th>行政區</th>
-                        <th>土地筆數</th>
-                        <th>建物棟數</th>
-                        <th>合計</th>
+                        <th data-sort="rank">排名</th>
+                        <th data-sort="district">行政區</th>
+                        <th data-sort="land">土地筆數</th>
+                        <th data-sort="building">建物棟數</th>
+                        <th data-sort="total">合計</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -242,7 +605,27 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        // 粒子背景配置
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
+        });
+
         const data = [
             { district: '楠梓區', land: 120, building: 80 },
             { district: '左營區', land: 77, building: 50 },
@@ -286,18 +669,44 @@
         const totalLand = data.reduce((sum, item) => sum + item.land, 0);
         const totalBuilding = data.reduce((sum, item) => sum + item.building, 0);
         
-        // 更新總計顯示
-        document.getElementById('totalLand').textContent = totalLand.toLocaleString();
-        document.getElementById('totalBuilding').textContent = totalBuilding.toLocaleString();
+        // 數字動畫
+        function animateNumber(element, target, duration = 2000) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = Math.floor(target).toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 16);
+        }
 
-        // 排序數據（按總計降序）
-        const sortedData = [...data].sort((a, b) => (b.land + b.building) - (a.land + a.building));
+        // 更新總計顯示（帶動畫）
+        setTimeout(() => {
+            animateNumber(document.getElementById('totalLand'), totalLand);
+            animateNumber(document.getElementById('totalBuilding'), totalBuilding);
+        }, 500);
 
-        // 創建圖表
-        const ctx = document.getElementById('auctionChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
+        let currentSort = 'total';
+        let currentFilter = 'all';
+        let currentView = 'stacked';
+        let sortedData = [...data].sort((a, b) => (b.land + b.building) - (a.land + a.building));
+
+        // 圖表實例
+        let chartInstance = null;
+
+        function createChart(viewType = 'stacked') {
+            const ctx = document.getElementById('auctionChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const chartData = {
                 labels: sortedData.map(item => item.district),
                 datasets: [
                     {
@@ -305,94 +714,205 @@
                         data: sortedData.map(item => item.land),
                         backgroundColor: 'rgba(54, 162, 235, 0.8)',
                         borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5
                     },
                     {
                         label: '建物棟數',
                         data: sortedData.map(item => item.building),
                         backgroundColor: 'rgba(255, 159, 64, 0.8)',
                         borderColor: 'rgba(255, 159, 64, 1)',
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5
                     }
                 ]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            font: {
-                                size: 14,
-                                family: "'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif"
-                            },
-                            padding: 15
-                        }
+            };
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.x.toLocaleString() + ' 筆/棟';
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 14, family: "'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif" },
+                                padding: 15,
+                                usePointStyle: true
                             }
                         },
-                        font: {
-                            size: 12,
-                            family: "'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif"
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        stacked: true,
-                        beginAtZero: true,
-                        ticks: {
-                            font: {
-                                size: 11,
-                                family: "'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif"
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.x.toLocaleString() + ' 筆/棟';
+                                }
                             },
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: '數量（筆/棟）',
-                            font: {
-                                size: 14,
-                                weight: 'bold',
-                                family: "'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif"
-                            }
+                            font: { size: 12, family: "'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif" },
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 15,
+                            cornerRadius: 10
                         }
                     },
-                    y: {
-                        stacked: true,
-                        ticks: {
-                            font: {
-                                size: 11,
-                                family: "'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif"
-                            }
+                    scales: {
+                        x: {
+                            stacked: viewType === 'stacked',
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 11, family: "'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif" },
+                                callback: function(value) { return value.toLocaleString(); }
+                            },
+                            title: {
+                                display: true,
+                                text: '數量（筆/棟）',
+                                font: { size: 14, weight: 'bold', family: "'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif" }
+                            },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        },
+                        y: {
+                            stacked: viewType === 'stacked',
+                            ticks: {
+                                font: { size: 11, family: "'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif" }
+                            },
+                            grid: { display: false }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
         // 生成表格
-        const tableBody = document.getElementById('tableBody');
-        sortedData.forEach((item, index) => {
-            const row = document.createElement('tr');
-            const total = item.land + item.building;
-            row.innerHTML = `
-                <td class="number-cell">${index + 1}</td>
-                <td class="district-cell">${item.district}</td>
-                <td class="number-cell">${item.land.toLocaleString()}</td>
-                <td class="number-cell">${item.building.toLocaleString()}</td>
-                <td class="number-cell"><strong>${total.toLocaleString()}</strong></td>
-            `;
-            tableBody.appendChild(row);
+        function renderTable(dataToRender = sortedData) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            dataToRender.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const total = item.land + item.building;
+                const rank = index + 1;
+                const badgeClass = rank <= 3 ? 'top3' : '';
+                
+                row.innerHTML = `
+                    <td class="number-cell">
+                        <span class="rank-badge ${badgeClass}">${rank}</span>
+                    </td>
+                    <td class="district-cell">${item.district}</td>
+                    <td class="number-cell">${item.land.toLocaleString()}</td>
+                    <td class="number-cell">${item.building.toLocaleString()}</td>
+                    <td class="number-cell"><strong>${total.toLocaleString()}</strong></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 排序功能
+        function sortData(sortType) {
+            currentSort = sortType;
+            sortedData = [...data].sort((a, b) => {
+                switch(sortType) {
+                    case 'land': return b.land - a.land;
+                    case 'building': return b.building - a.building;
+                    case 'total': 
+                    default: return (b.land + b.building) - (a.land + a.building);
+                }
+            });
+            renderTable(getFilteredData());
+            createChart(currentView);
+        }
+
+        // 篩選功能
+        function getFilteredData() {
+            let filtered = [...sortedData];
+            
+            // 搜尋篩選
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(item => item.district.includes(searchTerm));
+            }
+            
+            // 數量篩選
+            if (currentFilter === 'top10') {
+                filtered = filtered.slice(0, 10);
+            } else if (currentFilter === 'top5') {
+                filtered = filtered.slice(0, 5);
+            }
+            
+            return filtered;
+        }
+
+        // 事件監聽
+        document.querySelectorAll('.filter-btn[data-sort]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn[data-sort]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                sortData(btn.dataset.sort);
+            });
         });
+
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderTable(getFilteredData());
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', () => {
+            renderTable(getFilteredData());
+        });
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentView = btn.dataset.view;
+                createChart(currentView);
+            });
+        });
+
+        // 表格標題排序
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const sortType = th.dataset.sort;
+                if (sortType === 'rank') return;
+                sortData(sortType === 'district' ? 'total' : sortType);
+                
+                // 更新排序指示器
+                document.querySelectorAll('th').forEach(h => {
+                    h.classList.remove('sorted-asc', 'sorted-desc');
+                });
+                th.classList.add('sorted-desc');
+            });
+        });
+
+        // 滾動動畫
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 初始化
+        renderTable();
+        createChart();
     </script>
 </body>
 </html>
